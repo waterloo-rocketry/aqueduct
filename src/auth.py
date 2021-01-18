@@ -18,7 +18,7 @@ headers = {
 
 def save_token(token):
     ssm_client = boto3.client('ssm')
-    
+
     ssm_client.put_parameter(Name='access', Value=token['access_token'], Overwrite=True)
     ssm_client.put_parameter(Name='refresh', Value=token['refresh_token'], Overwrite=True)
 
@@ -41,12 +41,12 @@ def make_session():
         'token_type': 'Bearer',
         'expires_in': -1
     }
-    
+
     extra = {
         'client_id': client_id,
         'client_secret': client_secret
     }
-    
+
     sess = rqo.OAuth2Session(client_id, redirect_uri=redirect_uri, token=token,
                              auto_refresh_url=refresh_endpoint, auto_refresh_kwargs=extra,
                              token_updater=save_token)
