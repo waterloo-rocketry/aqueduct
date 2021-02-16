@@ -1,5 +1,4 @@
 import json
-import urllib
 
 
 basecamp_project_id = '4075148'
