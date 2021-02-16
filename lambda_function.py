@@ -6,7 +6,13 @@ from src import basecamp, github, auth
 def lambda_handler(event, context):
     sess = auth.make_session()
     gh_event = github.parse_event(json.loads(event['body']))
-    r = basecamp.handle_gh_event(sess, gh_event)
+    try:
+        r = basecamp.handle_gh_event(sess, gh_event)
+    except basecamp.NotFoundError as err:
+        return {
+            'statusCode': 404,
+            'error': str(err)
+        }
 
     if r is None:
         return {

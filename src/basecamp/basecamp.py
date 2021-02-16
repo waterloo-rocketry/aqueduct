@@ -1,8 +1,12 @@
 import json
+import urllib
 
 
 basecamp_project_id = '4075148'
 basecamp_url = f'https://3.basecampapi.com/{basecamp_project_id}'
+
+class NotFoundError(Exception):
+    pass
 
 
 def get_software_project(sess):
@@ -31,6 +35,10 @@ def extract_repos(description):
 
 def get_todolist(sess, project, repo_name):
     todoset_id = extract_todoset_id(project)
+
+    # We expect our project to have a list of todos, so we raise an error if not found
+    if todoset_id is None:
+        raise NotFoundError('List of to-dos not found for project')
     url = f'{basecamp_url}/buckets/{project["id"]}/todosets/{todoset_id}/todolists.json'
     todolist_resp = sess.get(url)
     todolists = todolist_resp.json()
@@ -39,6 +47,8 @@ def get_todolist(sess, project, repo_name):
         repos = extract_repos(todolist['description'])
         if repo_name in repos:
             return todolist
+    # A to-do list not existing for a repo is acceptable, so we return None
+    # to indicate this isn't an error condition
     return None
 
 
