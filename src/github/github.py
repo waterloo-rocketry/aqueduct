@@ -9,5 +9,5 @@ def parse_event(gh_event):
         'repo': gh_event['repository']['name'],
         'title': gh_event['issue']['title'],
         'desc': gh_event['issue']['body'],
-        'url': gh_event['issue']['url']
+        'url': gh_event['issue']['html_url']
     }
